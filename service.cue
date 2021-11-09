@@ -1,32 +1,33 @@
 #service: {
-name: =~"^[a-z]+$"
-hostname_reg: string
-backend: #Backend_type & {}
-rules: [...#Rules_type & {}]
+  name: =~"^[a-z]+$"
+  hostname_reg: string
+  backend: #backend & {}
+  rules: [...#rules & {}]
 }
 
-#Backend_type: {
-host: int
-port: int
-type: string
+// the backend is...
+#backend: {
+  // The host is
+  host: int
+  // Port of where host is listening
+  port: int
+  // Currently ELB or empty
+  type: "" | "ELB"
 }
 
-#Cache_type: {
-// @Summary this is a short summary
-// The rest of the comment block is the description
-// blah blah1    
-mode: "pass" | "static"
+#cache: {
+  mode: "pass" | "static"
 }
 
-#Fallback_type: {
-mode: "static" | "dynamic"
-status: int
+#fallback: {
+  mode: "static" | "dynamic"
+  status: int
 }
 
-#Rules_type: {
-name: string
-path_regex: string
-method: "GET" | "PUT" | "POST" | "OPTIONS"
-cache: #Cache_type
-fallback?: #Fallback_type & {}
+#rules: {
+  name: string
+  path_regex: string
+  method: "GET" | "PUT" | "POST" | "OPTIONS"
+  cache: #cache
+  fallback?: #fallback & {}
 }

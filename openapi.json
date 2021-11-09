@@ -7,7 +7,8 @@
   "paths": {},
   "components": {
     "schemas": {
-      "Backend_type": {
+      "backend": {
+        "description": "the backend is...",
         "type": "object",
         "required": [
           "host",
@@ -16,24 +17,30 @@
         ],
         "properties": {
           "host": {
+            "description": "The host is",
             "type": "integer"
           },
           "port": {
+            "description": "Port of where host is listening",
             "type": "integer"
           },
           "type": {
-            "type": "string"
+            "description": "Currently ELB or empty",
+            "type": "string",
+            "enum": [
+              "",
+              "ELB"
+            ]
           }
         }
       },
-      "Cache_type": {
+      "cache": {
         "type": "object",
         "required": [
           "mode"
         ],
         "properties": {
           "mode": {
-            "description": "@Summary this is a short summary\nThe rest of the comment block is the description\nblah blah1",
             "type": "string",
             "enum": [
               "pass",
@@ -42,7 +49,7 @@
           }
         }
       },
-      "Fallback_type": {
+      "fallback": {
         "type": "object",
         "required": [
           "mode",
@@ -61,7 +68,7 @@
           }
         }
       },
-      "Rules_type": {
+      "rules": {
         "type": "object",
         "required": [
           "name",
@@ -86,11 +93,11 @@
             ]
           },
           "cache": {
-            "$ref": "#/components/schemas/Cache_type"
+            "$ref": "#/components/schemas/cache"
           },
           "fallback": {
             "type": "object",
-            "$ref": "#/components/schemas/Fallback_type"
+            "$ref": "#/components/schemas/fallback"
           }
         }
       },
@@ -112,13 +119,13 @@
           },
           "backend": {
             "type": "object",
-            "$ref": "#/components/schemas/Backend_type"
+            "$ref": "#/components/schemas/backend"
           },
           "rules": {
             "type": "array",
             "items": {
               "type": "object",
-              "$ref": "#/components/schemas/Rules_type"
+              "$ref": "#/components/schemas/rules"
             }
           }
         }

@@ -1,25 +1,28 @@
 components:
   schemas:
-    Backend_type:
+    backend:
+      description: the backend is...
       properties:
         host:
+          description: The host is
           type: integer
         port:
+          description: Port of where host is listening
           type: integer
         type:
+          description: Currently ELB or empty
+          enum:
+          - ""
+          - ELB
           type: string
       required:
       - host
       - port
       - type
       type: object
-    Cache_type:
+    cache:
       properties:
         mode:
-          description: |-
-            @Summary this is a short summary
-            The rest of the comment block is the description
-            blah blah1
           enum:
           - pass
           - static
@@ -27,7 +30,7 @@ components:
       required:
       - mode
       type: object
-    Fallback_type:
+    fallback:
       properties:
         mode:
           enum:
@@ -40,12 +43,12 @@ components:
       - mode
       - status
       type: object
-    Rules_type:
+    rules:
       properties:
         cache:
-          $ref: '#/components/schemas/Cache_type'
+          $ref: '#/components/schemas/cache'
         fallback:
-          $ref: '#/components/schemas/Fallback_type'
+          $ref: '#/components/schemas/fallback'
           type: object
         method:
           enum:
@@ -67,7 +70,7 @@ components:
     service:
       properties:
         backend:
-          $ref: '#/components/schemas/Backend_type'
+          $ref: '#/components/schemas/backend'
           type: object
         hostname_reg:
           type: string
@@ -76,7 +79,7 @@ components:
           type: string
         rules:
           items:
-            $ref: '#/components/schemas/Rules_type'
+            $ref: '#/components/schemas/rules'
             type: object
           type: array
       required:
