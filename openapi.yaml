@@ -1,95 +1,204 @@
 components:
   schemas:
-    backend:
-      description: the backend is...
+    Backend:
       properties:
+        between_bytes_timeout:
+          pattern: ^\d+[s,m]$
+          type: string
+        connect_timeout:
+          pattern: ^\d+[s,m]$
+          type: string
+        first_byte_timeout:
+          pattern: ^\d+[s,m]$
+          type: string
         host:
-          description: The host is
-          type: integer
+          description: Hostname or IP - this must be resolvable when Varnish boots
+            up or it will crash
+          type: string
         port:
-          description: Port of where host is listening
+          minimum: 0
           type: integer
+        probe:
+          description: '### Probe configures the health check of this backend by periodically
+            sending a request to test if the backend is answering and thus "healthy".'
+          properties:
+            expected_response:
+              minimum: 0
+              type: integer
+            initial:
+              description: How many of the of the probes a good when Gateway starts.
+              minimum: 0
+              type: integer
+            interval:
+              description: How often should we poll
+              pattern: ^\d+[s,m]$
+              type: string
+            threshold:
+              description: How many of the .window last polls must be good for the
+                backend to be declared healthy.
+              type: integer
+            timeout:
+              description: What is the timeout of the probe
+              pattern: ^\d+[s,m]$
+              type: string
+            url:
+              description: What URL should varnish request (/health).
+              type: string
+            window:
+              description: The number of probe results in the sliding window
+              minimum: 0
+              type: integer
+          required:
+          - url
+          - timeout
+          - interval
+          - window
+          - initial
+          - expected_response
+          - threshold
+          type: object
         type:
-          description: Currently ELB or empty
-          enum:
-          - ""
-          - ELB
           type: string
       required:
       - host
       - port
-      - type
+      - probe
       type: object
-    cache:
+    Method:
+      enum:
+      - GET
+      - POST
+      - OPTIONS
+      - PUT
+      - DELETE
+      - HEAD
+      type: string
+    Rule:
       properties:
-        mode:
-          enum:
-          - pass
-          - static
-          type: string
-      required:
-      - mode
-      type: object
-    fallback:
-      properties:
-        mode:
-          enum:
-          - static
-          - dynamic
-          type: string
-        status:
-          type: integer
-      required:
-      - mode
-      - status
-      type: object
-    rules:
-      properties:
+        auth:
+          description: '### TODO'
+          type: object
         cache:
-          $ref: '#/components/schemas/cache'
+          description: '### TODO'
+          properties:
+            grace:
+              type: string
+            mode:
+              type: string
+            ttl:
+              type: string
+          required:
+          - mode
+          type: object
+        cookies:
+          description: if defined, "all" strips all cookies
+          properties:
+            strip:
+              enum:
+              - all
+              type: string
+          type: object
         fallback:
-          $ref: '#/components/schemas/fallback'
+          properties:
+            headers:
+              type: object
           type: object
         method:
-          enum:
-          - GET
-          - PUT
-          - POST
-          - OPTIONS
-          type: string
+          $ref: '#/components/schemas/Method'
         name:
+          description: An identifier and short description
           type: string
         path_regex:
+          description: How the rule is triggered
           type: string
+        tags:
+          description: |-
+            ### Tags that will be logged with all requests that hit this rule
+            ### Tags are logged as key value pairs in the following format:
+            `key1:val1,key2:val2`
+            ### Colons (:) and commas (,) are reserved characters that will be removed prior to logging
+          type: object
+        vary:
+          description: Vary the cache on the sum of the value of these headers.
+          items: {}
+          type: array
       required:
       - name
       - path_regex
       - method
-      - cache
+      - fallback
       type: object
-    service:
+    Service:
+      description: '### To configure Connected Ship, fill in all required fields.'
       properties:
         backend:
-          $ref: '#/components/schemas/backend'
-          type: object
-        hostname_reg:
+          $ref: '#/components/schemas/Backend'
+        enable_503_troubleshooting_ui:
+          type: boolean
+        hostname_regex:
+          description: Regex of host header values that will be routed to this service
           type: string
         name:
+          description: The name of the service. This must be the same as the yml filename
+            - why would you want it to not match? Are you some kind of animal?
           pattern: ^[a-z]+$
           type: string
+        priority:
+          description: Priority controls the ordering of the host header matching.
+            Only applicable if you have multiple services. Lower numbers get rendered
+            first.
+          exclusiveMaximum: true
+          maximum: 100
+          type: number
         rules:
+          description: |-
+            ### Here we define the 'rules' - routed by request url path.
+            ### Rules get processed from top to bottom and the first match wins.
+            ### Recommended to have the most specific rules at the top
           items:
-            $ref: '#/components/schemas/rules'
+            $ref: '#/components/schemas/Rule'
             type: object
+          type: array
+        snippets:
+          description: '### TODO'
+          items:
+            $ref: '#/components/schemas/Snippet'
+            type: object
+          type: array
+        suppress_log:
+          description: Paths to suppress logs, such as for healthchecks or monitoring.
+            Multiple values accepted
+          items:
+            type: string
           type: array
       required:
       - name
-      - hostname_reg
+      - priority
+      - hostname_regex
+      - suppress_log
       - backend
       - rules
       type: object
+    Snippet:
+      properties:
+        name:
+          type: string
+        sub:
+          enum:
+          - recv
+          - deliver
+          - backend_fetch
+          type: string
+        vcl:
+          type: string
+      required:
+      - name
+      - sub
+      - vcl
+      type: object
 info:
-  title: Generated by cue.
-  version: no version
+  description: Start with the service schema
+  title: Connected Ship Configuration
+  version: 1.0.0
 openapi: 3.0.0
 paths: {}

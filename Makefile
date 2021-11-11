@@ -1,6 +1,6 @@
 .PHONY: all
 
-all: generate deploy
+all: cleanup generate deploy
 
 generate:
 	go run .

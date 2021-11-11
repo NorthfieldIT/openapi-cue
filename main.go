@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"cuelang.org/go/cue"
+	"cuelang.org/go/cue/ast"
 	"cuelang.org/go/cue/load"
 	"cuelang.org/go/encoding/openapi"
 	"github.com/ghodss/yaml"
@@ -35,7 +36,16 @@ func main() {
 func genOpenAPI(defFile string, config *load.Config) ([]byte, error) {
 	buildInstances := load.Instances([]string{defFile}, config)
 	insts := cue.Build(buildInstances)
-	b, err := openapi.Gen(insts[0], nil)
+
+	//openapi config, not a load config
+	c := &openapi.Config{
+		Info: ast.NewStruct(
+			"title", ast.NewString("Connected Ship Configuration"),
+			"version", ast.NewString("1.0.0"),
+			"description", ast.NewString("Start with the service schema"),
+		),
+	}
+	b, err := openapi.Gen(insts[0], c)
 	if err != nil {
 		return nil, err
 	}
