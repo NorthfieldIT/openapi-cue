@@ -6,7 +6,7 @@ generate:
 	go run .
 
 deploy:
-	docker run -d --rm --name swagger-ui -p 80:8080 -e SWAGGER_JSON=/foo/openapi.yaml -v `pwd`:/foo swaggerapi/swagger-ui
+	docker run -d --rm --name nginx-http-server -p 80:80 -v `pwd`/public:/usr/share/nginx/html nginx
 
 cleanup: 
-	docker rm -f swagger-ui
+	docker rm -f nginx-http-server

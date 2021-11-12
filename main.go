@@ -29,7 +29,7 @@ func main() {
 	}
 
 	fmt.Printf("\n%v", string(y))
-	writeFile(y, "openapi.yaml")
+	writeFile(y, "public/service.yaml")
 
 }
 

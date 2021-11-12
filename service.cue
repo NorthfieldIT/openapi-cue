@@ -71,11 +71,20 @@
     vary?: [...]
     // ### TODO
     auth?: {...}
-    // ### TODO
+    // ### How or if objects matching the `path_regex` should be cached. Objects within the time-to-live (TTL) are considered fresh objects. Stale objects are those within the time period TTL and grace.
     cache?: {
-        mode: string
-        ttl?: string
-        grace?: string
+        // Modes are:
+        // * pass: do not cache this `path_regex`; creates a hit-for-pass
+        // * static: Cacheable - static TTL via config but overridable by origin
+        // * override: Cacheable - static TTL via config and overrides origin
+        // * origin: Cacheable - respect origin TTL and Grace 
+        // ** ex. Cache-Control: max-age=60, stale-while-revalidate=86400
+        // ** `TTL` is controlled by max-age etc, `grace` is controlled by stale-while-revalidate
+        mode: "pass" | "static" | "override" | "origin"
+        // An object lives in cache until TTL + grace elapses
+        ttl?: =~"^\\d+[s,m]$"
+        // Serve content that is somewhat [stale](https://varnish-cache.org/docs/trunk/users-guide/vcl-grace.html) instead of waiting for a fresh object from the backend.
+        grace?: =~"^\\d+[s,m]$"
     }
 
     fallback: {

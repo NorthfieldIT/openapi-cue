@@ -1,9 +1,11 @@
 # OpenAPI HTML Documentation Generator
 
-Generates OpenAPI doc as `openapi.json` and `openapi.yaml` based on the CUE schema `service.cue` and deploys it to swagger-ui Docker container.
+Generates OpenAPI doc as `openapi.json` and `public/service.yaml` based on the CUE schema `service.cue` and deploys it to nginx Docker container.  The UI served is from [Stoplight Elements](https://stoplight.io/open-source/elements/).
+
+>  Elements is an API Documentation toolkit, leveraging OpenAPI and Markdown (CommonMark) to provide beautiful, interactive API reference documentation, that you can integrate with any existing content-management system or single-page application
 
 ## Development
-Be sure you don't have listener on port `localhost:80` as that is where swagger-ui is hosted.
+Be sure you don't have listener on port `localhost:80` as that is where nginx is hosted.
 
 1. `$ make`
 
