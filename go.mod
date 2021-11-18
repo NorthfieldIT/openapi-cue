@@ -1,4 +1,4 @@
-module rccl.com/cs
+module github.com/NorthfieldIT/openapi-cue
 
 go 1.17
 

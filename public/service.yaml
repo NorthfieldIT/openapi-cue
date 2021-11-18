@@ -217,7 +217,7 @@ components:
       - vcl
       type: object
 info:
-  description: Start with the service schema
+  description: Start with the service schema.
   title: Connected Ship Configuration
   version: 1.0.0
 openapi: 3.0.0
