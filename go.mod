@@ -4,9 +4,13 @@ go 1.17
 
 require cuelang.org/go v0.4.0
 
-require gopkg.in/yaml.v2 v2.2.2 // indirect
+require (
+	github.com/PaesslerAG/gval v1.0.0 // indirect
+	gopkg.in/yaml.v2 v2.2.2 // indirect
+)
 
 require (
+	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/cockroachdb/apd/v2 v2.0.1 // indirect
 	github.com/emicklei/proto v1.6.15 // indirect
 	github.com/ghodss/yaml v1.0.0
