@@ -1,0 +1,62 @@
+components:
+  schemas:
+    Method:
+      enum:
+      - GET
+      - POST
+      - OPTIONS
+      - PUT
+      - DELETE
+      - HEAD
+      type: string
+    Rule:
+      properties:
+        method:
+          $ref: '#/components/schemas/Method'
+        name:
+          description: An identifier and short description
+          type: string
+        path_regex:
+          description: How the rule is triggered
+          type: string
+      required:
+      - name
+      - path_regex
+      - method
+      type: object
+    Sample:
+      description: '### To configure Sample, fill in all required fields.'
+      properties:
+        hostname_regex:
+          description: Regex of host header values that will be routed to this service
+          type: string
+        name:
+          description: The name of the service. This must be the same as the yml filename
+            - why would you want it to not match? Are you some kind of animal?
+          pattern: ^[a-z]+$
+          type: string
+        priority:
+          description: Priority controls the ordering of the host header matching.
+            Only applicable if you have multiple services. Lower numbers get rendered
+            first.
+          exclusiveMaximum: true
+          maximum: 100
+          type: number
+        rules:
+          description: '### Here we define the ''rules'' - routed by request url path.'
+          items:
+            $ref: '#/components/schemas/Rule'
+            type: object
+          type: array
+      required:
+      - name
+      - priority
+      - hostname_regex
+      - rules
+      type: object
+info:
+  description: Start with the top level, Sample schema.
+  title: Sample Configuration
+  version: 1.0.0
+openapi: 3.0.0
+paths: {}

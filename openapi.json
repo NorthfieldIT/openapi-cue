@@ -1,93 +1,13 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Connected Ship Configuration",
+    "title": "Sample Configuration",
     "version": "1.0.0",
-    "description": "Start with the service schema."
+    "description": "Start with the top level, Sample schema."
   },
   "paths": {},
   "components": {
     "schemas": {
-      "Backend": {
-        "type": "object",
-        "required": [
-          "host",
-          "port",
-          "probe"
-        ],
-        "properties": {
-          "host": {
-            "description": "Hostname or IP - this must be resolvable when Varnish boots up or it will crash",
-            "type": "string"
-          },
-          "port": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "type": {
-            "type": "string"
-          },
-          "first_byte_timeout": {
-            "type": "string",
-            "pattern": "^\\d+[s,m]$"
-          },
-          "connect_timeout": {
-            "type": "string",
-            "pattern": "^\\d+[s,m]$"
-          },
-          "between_bytes_timeout": {
-            "type": "string",
-            "pattern": "^\\d+[s,m]$"
-          },
-          "probe": {
-            "description": "### Probe configures the health check of this backend by periodically sending a request to test if the backend is answering and thus \"healthy\".",
-            "type": "object",
-            "required": [
-              "url",
-              "timeout",
-              "interval",
-              "window",
-              "initial",
-              "expected_response",
-              "threshold"
-            ],
-            "properties": {
-              "url": {
-                "description": "What URL should varnish request (/health).",
-                "type": "string"
-              },
-              "timeout": {
-                "description": "What is the timeout of the probe",
-                "type": "string",
-                "pattern": "^\\d+[s,m]$"
-              },
-              "interval": {
-                "description": "How often should we poll",
-                "type": "string",
-                "pattern": "^\\d+[s,m]$"
-              },
-              "window": {
-                "description": "The number of probe results in the sliding window",
-                "type": "integer",
-                "minimum": 0
-              },
-              "initial": {
-                "description": "How many of the of the probes a good when Gateway starts.",
-                "type": "integer",
-                "minimum": 0
-              },
-              "expected_response": {
-                "type": "integer",
-                "minimum": 0
-              },
-              "threshold": {
-                "description": "How many of the .window last polls must be good for the backend to be declared healthy.",
-                "type": "integer"
-              }
-            }
-          }
-        }
-      },
       "Method": {
         "type": "string",
         "enum": [
@@ -104,8 +24,7 @@
         "required": [
           "name",
           "path_regex",
-          "method",
-          "fallback"
+          "method"
         ],
         "properties": {
           "name": {
@@ -118,80 +37,16 @@
           },
           "method": {
             "$ref": "#/components/schemas/Method"
-          },
-          "cookies": {
-            "description": "if defined, \"all\" strips all cookies",
-            "type": "object",
-            "properties": {
-              "strip": {
-                "type": "string",
-                "enum": [
-                  "all"
-                ]
-              }
-            }
-          },
-          "tags": {
-            "description": "### Tags that will be logged with all requests that hit this rule\n### Tags are logged as key value pairs in the following format:\n`key1:val1,key2:val2`\n### Colons (:) and commas (,) are reserved characters that will be removed prior to logging",
-            "type": "object"
-          },
-          "vary": {
-            "description": "Vary the cache on the sum of the value of these headers.",
-            "type": "array",
-            "items": {}
-          },
-          "auth": {
-            "description": "### TODO",
-            "type": "object"
-          },
-          "cache": {
-            "description": "### How or if objects matching the `path_regex` should be cached. Objects within the time-to-live (TTL) are considered fresh objects. Stale objects are those within the time period TTL and grace.",
-            "type": "object",
-            "required": [
-              "mode"
-            ],
-            "properties": {
-              "mode": {
-                "description": "Modes are:\n* pass: do not cache this `path_regex`; creates a hit-for-pass\n* static: Cacheable - static TTL via config but overridable by origin\n* override: Cacheable - static TTL via config and overrides origin\n* origin: Cacheable - respect origin TTL and Grace\n** ex. Cache-Control: max-age=60, stale-while-revalidate=86400\n** `TTL` is controlled by max-age etc, `grace` is controlled by stale-while-revalidate",
-                "type": "string",
-                "enum": [
-                  "pass",
-                  "static",
-                  "override",
-                  "origin"
-                ]
-              },
-              "ttl": {
-                "description": "An object lives in cache until TTL + grace elapses",
-                "type": "string",
-                "pattern": "^\\d+[s,m]$"
-              },
-              "grace": {
-                "description": "Serve content that is somewhat [stale](https://varnish-cache.org/docs/trunk/users-guide/vcl-grace.html) instead of waiting for a fresh object from the backend.",
-                "type": "string",
-                "pattern": "^\\d+[s,m]$"
-              }
-            }
-          },
-          "fallback": {
-            "type": "object",
-            "properties": {
-              "headers": {
-                "type": "object"
-              }
-            }
           }
         }
       },
-      "Service": {
-        "description": "### To configure Connected Ship, fill in all required fields.",
+      "Sample": {
+        "description": "### To configure Sample, fill in all required fields.",
         "type": "object",
         "required": [
           "name",
           "priority",
           "hostname_regex",
-          "suppress_log",
-          "backend",
           "rules"
         ],
         "properties": {
@@ -210,58 +65,13 @@
             "description": "Regex of host header values that will be routed to this service",
             "type": "string"
           },
-          "suppress_log": {
-            "description": "Paths to suppress logs, such as for healthchecks or monitoring. Multiple values accepted",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "enable_503_troubleshooting_ui": {
-            "type": "boolean"
-          },
-          "backend": {
-            "$ref": "#/components/schemas/Backend"
-          },
           "rules": {
-            "description": "### Here we define the 'rules' - routed by request url path.\n### Rules get processed from top to bottom and the first match wins.\n### Recommended to have the most specific rules at the top",
+            "description": "### Here we define the 'rules' - routed by request url path.",
             "type": "array",
             "items": {
               "type": "object",
               "$ref": "#/components/schemas/Rule"
             }
-          },
-          "snippets": {
-            "description": "### TODO",
-            "type": "array",
-            "items": {
-              "type": "object",
-              "$ref": "#/components/schemas/Snippet"
-            }
-          }
-        }
-      },
-      "Snippet": {
-        "type": "object",
-        "required": [
-          "name",
-          "sub",
-          "vcl"
-        ],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "sub": {
-            "type": "string",
-            "enum": [
-              "recv",
-              "deliver",
-              "backend_fetch"
-            ]
-          },
-          "vcl": {
-            "type": "string"
           }
         }
       }
