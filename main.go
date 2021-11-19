@@ -10,10 +10,10 @@ import (
 
 func main() {
 
-	b, err := openapi.Generate("service.cue", &openapi.Info{
-		Title:   "Connected Ship Configuration",
+	b, err := openapi.Generate("sample.cue", &openapi.Info{
+		Title:   "Sample Configuration",
 		Version: "1.0.0",
-		Desc:    "Start with the service schema.",
+		Desc:    "Start with the top level, Sample schema.",
 	})
 
 	if err != nil {
@@ -29,7 +29,7 @@ func main() {
 	}
 
 	fmt.Printf("\n%v", string(y))
-	writeFile(y, "public/service.yaml")
+	writeFile(y, "public/sample.yaml")
 
 }
 
