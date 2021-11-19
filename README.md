@@ -10,3 +10,7 @@ Be sure you don't have listener on port `localhost:80` as that is where nginx is
 1. `$ make`
 
 2. Open browser http://localhost
+
+To execute tests, use standard library. i.e.
+
+`go test -v -count=1 ./...`
